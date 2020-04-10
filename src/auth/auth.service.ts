@@ -38,7 +38,7 @@ export class AuthService {
       const user = await this.userModel.findOne({email});
       if(user && await bcrypt.compare(password, user.password)) {
         //const result = _.assign({}, _.pick(user, ['id','email','username','bio','image']))
-        _.assign(user, _.pick(user, ['id','email','username','bio','image']))
+        // _.assign(user, _.pick(user, ['id','email','username','bio','image']))
         //const payload = {username: result.username};
         const payload = {username: user.username};
         const token = this.jwtService.sign(payload);
