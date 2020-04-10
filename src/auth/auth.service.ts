@@ -5,22 +5,24 @@ import { Model } from 'mongoose';
 import * as bcrypt from 'bcryptjs';
 import { RegisterDto, LoginDto } from './../models/user.dto';
 import * as _ from 'lodash';
+import { JwtService } from '@nestjs/jwt';
+import {classToPlain} from "class-transformer";
 
 @Injectable()
 export class AuthService {
 
   constructor(
-    @InjectModel('User') private readonly userModel: Model<User>
+    @InjectModel('User') private readonly userModel: Model<User>,
+    private jwtService: JwtService
   ){}
 
   async register(credentials: RegisterDto) {
     try {
       credentials.password = await bcrypt.hash(credentials.password, 10);
       const user = await this.userModel.create(credentials);
-      // const payload = {username: user.username};
-      // const token = this.jwtService.sign(payload);
-      // return {user: {...user.toJSON(), token}};
-      return user;
+      const payload = {username: user.username};
+      const token = this.jwtService.sign(payload);
+      return {user: {...classToPlain(user), token}};
     } catch (err) {
       if(err.code === 11000) {
         throw new ConflictException(Object.keys(err.keyPattern)[0]+' has already been taken');
@@ -35,10 +37,9 @@ export class AuthService {
       const user = await this.userModel.findOne({email});
       if(user && await bcrypt.compare(password, user.password)) {
         const result = _.assign({}, _.pick(user, ['id','email','username','bio','image']))
-        // const payload = {username: result.username};
-        // const token = this.jwtService.sign(payload);
-        // return {user: {...result.toJSON(), token}};
-        return result;
+        const payload = {username: result.username};
+        const token = this.jwtService.sign(payload);
+        return { user: {...classToPlain(result), token}};
       }
       throw new UnauthorizedException('Invalid credentials');
     } catch (err) {
