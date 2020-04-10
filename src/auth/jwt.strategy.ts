@@ -13,7 +13,8 @@ export class JwtStrategy extends PassportStrategy(Strategy){
     @InjectModel('User') private readonly userModel: Model<User>,
     private readonly config: ConfigService) {
     super({
-      jwtFromRequest: ExtractJwt.fromAuthHeaderWithScheme('Token'),
+      jwtFromRequest: ExtractJwt.fromHeader('x-auth-token'),
+      //jwtFromRequest: ExtractJwt.fromAuthHeaderWithScheme('Token'),
       secretOrKey: config.get('SECRET'),
     });
   }
