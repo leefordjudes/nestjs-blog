@@ -9,7 +9,7 @@ export const UserSchema = new mongoose.Schema({
   image: {type: String},
 },{timestamps: true});
 
-export interface User extends mongoose.Document {
+export class User extends mongoose.Document {
   id: string;
   email: string;
   username: string;
@@ -18,8 +18,12 @@ export interface User extends mongoose.Document {
   image?: string;
   createdAt: any;
   updatedAt: any;
+
+  async toJSON() {
+    return classToPlain(this);
+  }
 }
 
-export interface AuthPayLoad {
+export class AuthPayLoad {
   username: string;
 }

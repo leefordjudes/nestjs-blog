@@ -22,7 +22,8 @@ export class AuthService {
       const user = await this.userModel.create(credentials);
       const payload = {username: user.username};
       const token = this.jwtService.sign(payload);
-      return {user: {...classToPlain(user), token}};
+      //return {user: {...classToPlain(user), token}};
+      return {user: {...user.toJSON(), token}};
     } catch (err) {
       if(err.code === 11000) {
         throw new ConflictException(Object.keys(err.keyPattern)[0]+' has already been taken');
@@ -36,10 +37,13 @@ export class AuthService {
     try {
       const user = await this.userModel.findOne({email});
       if(user && await bcrypt.compare(password, user.password)) {
-        const result = _.assign({}, _.pick(user, ['id','email','username','bio','image']))
-        const payload = {username: result.username};
+        //const result = _.assign({}, _.pick(user, ['id','email','username','bio','image']))
+        _.assign(user, _.pick(user, ['id','email','username','bio','image']))
+        //const payload = {username: result.username};
+        const payload = {username: user.username};
         const token = this.jwtService.sign(payload);
-        return { user: {...classToPlain(result), token}};
+        //return { user: {...classToPlain(result), token}};
+        return { user: {...user.toJSON(), token}};
       }
       throw new UnauthorizedException('Invalid credentials');
     } catch (err) {
