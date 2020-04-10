@@ -1,4 +1,4 @@
-import { IsEmail, IsString, MinLength, MaxLength } from 'class-validator';
+import { IsEmail, IsString, MinLength, MaxLength, IsOptional } from 'class-validator';
 
 export class LoginDto {
   @IsEmail()
@@ -16,4 +16,12 @@ export class RegisterDto extends LoginDto {
   @MinLength(5)
   @MaxLength(20)
   username: string; 
+}
+
+export class UpdateUserDto {
+
+  @IsOptional()
+  bio: string;
+  @IsOptional()
+  image: string;
 }
