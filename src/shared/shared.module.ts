@@ -3,6 +3,7 @@ import { MongooseModule } from '@nestjs/mongoose';
 
 import { ConfigService } from './config/config.service';
 import { ConfigModule } from './config/config.module';
+import { SharedService } from './shared.service';
 
 @Global()
 @Module({
@@ -16,7 +17,8 @@ import { ConfigModule } from './config/config.module';
         const host = config.get('DB_HOST');
         const name = config.get('DB_NAME');
         return {
-          uri: `mongodb+srv://${user}:${pass}@${host}/${name}?retryWrites=true&w=majority`,
+          //uri: `mongodb+srv://${user}:${pass}@${host}/${name}?retryWrites=true&w=majority`,
+          uri: `mongodb://127.0.0.1:27017/${name}`,
           useNewUrlParser: true,
           useUnifiedTopology: true,
           useCreateIndex: true,
@@ -25,5 +27,7 @@ import { ConfigModule } from './config/config.module';
       inject: [ConfigService],
     }),
   ],
+  providers: [SharedService],
+  exports: [SharedService]
 })
 export class SharedModule {}

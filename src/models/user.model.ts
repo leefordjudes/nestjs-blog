@@ -1,5 +1,4 @@
 import * as mongoose from 'mongoose';
-import { classToPlain } from 'class-transformer';
 
 export const UserSchema = new mongoose.Schema({
   email: {type: String, required: true, unique: true},
@@ -7,21 +6,23 @@ export const UserSchema = new mongoose.Schema({
   password: {type: String, required: true},
   bio: {type: String},
   image: {type: String},
+  followers: { type: Array,  items: { type: String, trim: true}, },
+  articles: {type: [String], trim: true},
+  favorites: {type: [String], trim: true},
 },{timestamps: true});
 
-export class User extends mongoose.Document {
+export interface User extends mongoose.Document {
   id: string;
   email: string;
   username: string;
   password: string;
   bio?: string;
   image?: string;
+  followers?: [string]; //user id
+  articles?: [string]; //article ids written by this user
+  favorites?: [string]; //article ids of favoritedBy added.
   createdAt: any;
   updatedAt: any;
-
-  async toJSON() {
-    return classToPlain(this);
-  }
 }
 
 export class AuthPayLoad {

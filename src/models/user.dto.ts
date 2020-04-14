@@ -13,7 +13,7 @@ export class LoginDto {
 
 export class RegisterDto extends LoginDto {
   @IsString()
-  @MinLength(5)
+  @MinLength(3)
   @MaxLength(20)
   username: string; 
 }
